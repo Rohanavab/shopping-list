@@ -1,6 +1,8 @@
 const itemForm = document.getElementById("item-form");
 const itemInput = document.getElementById("item-input");
 const itemList = document.getElementById("item-list");
+const filterItem = document.getElementById("filter");
+const clear = document.getElementById("clear");
 
 //Functions
 function createButton(classes) {
@@ -33,7 +35,54 @@ function addItem(e) {
   li.appendChild(button);
   itemList.appendChild(li);
   itemInput.value = "";
+  checkUI();
 }
+
+function removeItem(e) {
+  if (e.target.parentElement.classList.contains("remove-item")) {
+    e.target.parentElement.parentElement.remove();
+  }
+  checkUI();
+}
+
+function clearItem(e) {
+  console.log("clicked");
+  while (itemList.firstChild) {
+    itemList.removeChild(itemList.firstChild);
+  }
+  checkUI();
+}
+
+function checkUI() {
+  const items = document.querySelectorAll("li");
+
+  if (items.length === 0) {
+    filterItem.style.display = "none";
+    clear.style.display = "none";
+  } else {
+    filterItem.style.display = "block";
+    clear.style.display = "block";
+  }
+}
+function itemFilter(e) {
+  const items = document.querySelectorAll("li");
+
+  const text = e.target.value.toLowerCase();
+  items.forEach((item) => {
+    const itemName = item.firstChild.textContent.toLowerCase();
+    if (itemName.indexOf(text) != -1) {
+      item.style.display = "flex";
+    } else {
+      item.style.display = "none";
+    }
+  });
+}
+window.localStorage.setItem("name", "Rohan");
 
 //Event Listeners
 itemForm.addEventListener("submit", addItem);
+itemList.addEventListener("click", removeItem);
+clear.addEventListener("click", clearItem);
+filterItem.addEventListener("input", itemFilter);
+
+checkUI();
